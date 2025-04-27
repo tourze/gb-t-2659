@@ -1,45 +1,62 @@
 # GB/T 2659
 
+[English](README.md) | [中文](README.zh-CN.md)
+
+[![Latest Version](https://img.shields.io/packagist/v/tourze/gb-t-2659.svg?style=flat-square)](https://packagist.org/packages/tourze/gb-t-2659)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-GB/T 2659 世界各国和地区名称代码（2字母）的 PHP 实现。
+A PHP implementation of GB/T 2659 country and region codes (2-letter).
 
-GB/T 2659 implementation for country and region codes (2-letter) in PHP.
+## Features
 
-## 安装 / Installation
+- Complete implementation of GB/T 2659 standard
+- Supports both Chinese and English country names
+- Based on PHP 8.1 enums, type-safe
+- Extensible and suitable for forms, data transformation, and more
+
+## Installation
+
+- Requires PHP >= 8.1
+- Depends on `tourze/enum-extra`
+
+Install via Composer:
 
 ```bash
 composer require tourze/gb-t-2659
 ```
 
-## 要求 / Requirements
-
-- PHP >= 8.1
-- tourze/enum-extra
-
-## 使用 / Usage
+## Quick Start
 
 ```php
 use Tourze\GBT2659\Alpha2Code;
 
-// 获取国家代码 / Get country code
-$code = Alpha2Code::CN; // 中国 / China
-$code = Alpha2Code::US; // 美国 / United States
+// Get country code
+$code = Alpha2Code::CN; // China
+$code = Alpha2Code::US; // United States
 
-// 获取国家名称 / Get country name
-echo $code->getLabel(); // 输出: 中国 / Output: China
+// Get country name
+echo $code->getLabel(); // Output: China
 
-// 获取小写代码 / Get lowercase code
-echo $code->toLowerCase(); // 输出: cn / Output: cn
+// Get lowercase code
+echo $code->toLowerCase(); // Output: cn
 ```
 
-## 特性 / Features
+## Documentation
 
-- 完整的 GB/T 2659 标准实现 / Complete GB/T 2659 standard implementation
-- 支持中英文国家名称 / Support for Chinese and English country names
-- 基于 PHP 8.1 枚举 / Based on PHP 8.1 enums
-- 类型安全 / Type-safe
+- Retrieve all enum entries via `Alpha2Code::cases()`
+- `getLabel()` returns the country name
+- `toLowerCase()` returns the lowercase code
+- Integrate with forms or dropdowns using `toArray()` or `toSelectItem()`
 
-## 许可证 / License
+## Contributing
+
+- Please check existing issues and PRs before submitting new ones
+- Follow the coding style and provide tests for new features
+
+## License
 
 MIT License
+
+## Changelog
+
+See [CHANGELOG.md] or the Git commit history for details.
