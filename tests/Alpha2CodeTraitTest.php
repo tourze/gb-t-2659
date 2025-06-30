@@ -17,7 +17,7 @@ class Alpha2CodeTraitTest extends TestCase
     {
         $item = Alpha2Code::CN->toSelectItem();
 
-        $this->assertIsArray($item);
+        $this->assertNotEmpty($item);
         $this->assertArrayHasKey('label', $item);
         $this->assertArrayHasKey('text', $item);
         $this->assertArrayHasKey('value', $item);
@@ -36,7 +36,7 @@ class Alpha2CodeTraitTest extends TestCase
     {
         $array = Alpha2Code::CN->toArray();
 
-        $this->assertIsArray($array);
+        $this->assertNotEmpty($array);
         $this->assertArrayHasKey('value', $array);
         $this->assertArrayHasKey('label', $array);
 

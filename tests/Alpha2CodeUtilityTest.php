@@ -18,7 +18,7 @@ class Alpha2CodeUtilityTest extends TestCase
         foreach (Alpha2Code::cases() as $case) {
             $label = $case->getLabel();
             $this->assertNotEmpty($label, sprintf('枚举 %s 应该有对应的标签', $case->name));
-            $this->assertIsString($label);
+            $this->assertGreaterThan(0, strlen($label), sprintf('枚举 %s 应该有非空标签', $case->name));
         }
     }
 
@@ -78,8 +78,8 @@ class Alpha2CodeUtilityTest extends TestCase
         $isAsian = in_array(Alpha2Code::JP, $asianCountries);
         $this->assertTrue($isAsian, 'JP应属于亚洲国家');
 
-        $isAsian = in_array(Alpha2Code::US, $asianCountries);
-        $this->assertFalse($isAsian, 'US不应属于亚洲国家');
+        // 验证美国不在亚洲国家列表中
+        $this->assertNotContains(Alpha2Code::US, $asianCountries, 'US不应属于亚洲国家');
     }
 
     /**

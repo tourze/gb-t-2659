@@ -58,7 +58,7 @@ class Alpha2CodeTest extends TestCase
         $cases = Alpha2Code::cases();
 
         // 验证是否包含所有枚举项
-        $this->assertIsArray($cases);
+        $this->assertCount(249, $cases); // 实际定义的国家和地区数量
         $this->assertGreaterThan(200, count($cases)); // 世界上有约250个国家和地区
 
         // 验证具体的枚举项是否存在
@@ -90,7 +90,7 @@ class Alpha2CodeTest extends TestCase
         $options = Alpha2Code::genOptions();
 
         // 验证选项格式是否正确
-        $this->assertIsArray($options);
+        $this->assertNotEmpty($options);
         $this->assertGreaterThan(200, count($options));
 
         // 验证选项内容
