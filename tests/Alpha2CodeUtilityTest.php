@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\GBT2659\Tests;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tourze\GBT2659\Alpha2Code;
+use Tourze\PHPUnitEnum\AbstractEnumTestCase;
 
 /**
  * 测试 Alpha2Code 的实用功能场景
+ *
+ * @internal
  */
-class Alpha2CodeUtilityTest extends TestCase
+#[CoversClass(Alpha2Code::class)]
+final class Alpha2CodeUtilityTest extends AbstractEnumTestCase
 {
     /**
      * 测试遍历所有枚举是否都有对应的标签(中文名称)
@@ -34,26 +40,35 @@ class Alpha2CodeUtilityTest extends TestCase
     }
 
     /**
-     * 测试从字符串获取枚举实例的场景
+     * 测试从有效字符串获取枚举实例
      */
-    public function testGetEnumFromStringScenarios(): void
+    public function testFromValidString(): void
     {
-        // 测试大小写匹配
         $this->assertSame(Alpha2Code::CN, Alpha2Code::from('CN'));
+    }
 
-        // 测试大小写不匹配（应该失败）
-        try {
-            Alpha2Code::from('cn');
-            $this->fail('应该抛出异常，因为枚举值是大写的，但输入是小写的');
-        } catch (\ValueError $e) {
-            // 预期的异常
-            $this->assertTrue(true);
-        }
+    /**
+     * 测试从无效字符串获取枚举实例应抛出异常
+     */
+    public function testFromInvalidStringThrowsException(): void
+    {
+        $this->expectException(\ValueError::class);
+        Alpha2Code::from('cn');
+    }
 
-        // 测试tryFrom对大小写不匹配的处理
+    /**
+     * 测试tryFrom对无效输入的处理
+     */
+    public function testTryFromInvalidString(): void
+    {
         $this->assertNull(Alpha2Code::tryFrom('cn'), '小写的国家代码应该无法匹配');
+    }
 
-        // 测试tryFrom对有效值的处理
+    /**
+     * 测试tryFrom对有效输入的处理
+     */
+    public function testTryFromValidString(): void
+    {
         $this->assertSame(Alpha2Code::US, Alpha2Code::tryFrom('US'));
     }
 
@@ -75,7 +90,7 @@ class Alpha2CodeUtilityTest extends TestCase
             Alpha2Code::SG,
         ];
 
-        $isAsian = in_array(Alpha2Code::JP, $asianCountries);
+        $isAsian = in_array(Alpha2Code::JP, $asianCountries, true);
         $this->assertTrue($isAsian, 'JP应属于亚洲国家');
 
         // 验证美国不在亚洲国家列表中
@@ -97,12 +112,72 @@ class Alpha2CodeUtilityTest extends TestCase
      */
     public function testComparingEnums(): void
     {
-        $this->assertNotSame(Alpha2Code::CN, Alpha2Code::US);
         $this->assertNotEquals(Alpha2Code::CN, Alpha2Code::US);
 
         // 验证相同的枚举实例是等价的
         $code1 = Alpha2Code::CN;
         $code2 = Alpha2Code::CN;
         $this->assertSame($code1, $code2);
+    }
+
+    /**
+     * 测试 toArray 方法的实用场景
+     */
+    public function testToArray(): void
+    {
+        // 测试多个国家的 toArray 返回结果
+        $countries = [Alpha2Code::CN, Alpha2Code::US, Alpha2Code::JP, Alpha2Code::GB];
+
+        foreach ($countries as $country) {
+            $array = $country->toArray();
+
+            $this->assertIsArray($array);
+            $this->assertNotEmpty($array);
+            $this->assertArrayHasKey('value', $array);
+            $this->assertArrayHasKey('label', $array);
+
+            $this->assertSame($country->value, $array['value']);
+            $this->assertSame($country->getLabel(), $array['label']);
+        }
+    }
+
+    /**
+     * 测试 toSelectItem 方法的实用场景
+     */
+    public function testToSelectItemUtilityScenarios(): void
+    {
+        // 测试批量生成选项项数据的场景
+        $countries = [Alpha2Code::CN, Alpha2Code::US, Alpha2Code::JP, Alpha2Code::GB];
+        $selectItems = [];
+
+        foreach ($countries as $country) {
+            $selectItems[] = $country->toSelectItem();
+        }
+
+        $this->assertCount(4, $selectItems);
+
+        // 验证每个选项的结构
+        foreach ($selectItems as $item) {
+            $this->assertIsArray($item);
+            $this->assertArrayHasKey('value', $item);
+            $this->assertArrayHasKey('label', $item);
+            $this->assertIsString($item['value']);
+            $this->assertIsString($item['label']);
+            $this->assertNotEmpty($item['value']);
+            $this->assertNotEmpty($item['label']);
+        }
+
+        // 验证具体内容
+        $this->assertSame('CN', $selectItems[0]['value']);
+        $this->assertSame('中国', $selectItems[0]['label']);
+        $this->assertSame('US', $selectItems[1]['value']);
+        $this->assertSame('美国', $selectItems[1]['label']);
+
+        // 测试用于表单选项的使用场景
+        $formOptions = array_column($selectItems, 'label', 'value');
+        $this->assertArrayHasKey('CN', $formOptions);
+        $this->assertSame('中国', $formOptions['CN']);
+        $this->assertArrayHasKey('US', $formOptions);
+        $this->assertSame('美国', $formOptions['US']);
     }
 }

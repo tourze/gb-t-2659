@@ -3,6 +3,10 @@
 [English](README.md) | [中文](README.zh-CN.md)
 
 [![最新版本](https://img.shields.io/packagist/v/tourze/gb-t-2659.svg?style=flat-square)](https://packagist.org/packages/tourze/gb-t-2659)
+[![下载量](https://img.shields.io/packagist/dt/tourze/gb-t-2659.svg?style=flat-square)](https://packagist.org/packages/tourze/gb-t-2659)
+[![PHP 版本要求](https://img.shields.io/packagist/php-v/tourze/gb-t-2659.svg?style=flat-square)](https://packagist.org/packages/tourze/gb-t-2659)
+[![构建状态](https://img.shields.io/github/actions/workflow/status/tourze-contrib/php-monorepo/tests.yml?branch=master&style=flat-square)](https://github.com/tourze-contrib/php-monorepo/actions)
+[![代码覆盖率](https://img.shields.io/codecov/c/github/tourze-contrib/php-monorepo.svg?style=flat-square)](https://codecov.io/gh/tourze-contrib/php-monorepo)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 GB/T 2659 世界各国和地区名称代码（2字母）的 PHP 实现。

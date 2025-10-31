@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\GBT2659\Tests;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tourze\GBT2659\Alpha2Code;
+use Tourze\PHPUnitEnum\AbstractEnumTestCase;
 
 /**
  * Alpha2Code枚举类的单元测试
+ *
+ * @internal
  */
-class Alpha2CodeTest extends TestCase
+#[CoversClass(Alpha2Code::class)]
+final class Alpha2CodeTest extends AbstractEnumTestCase
 {
     /**
      * 测试枚举类中的值是否与预期相符
@@ -67,11 +73,11 @@ class Alpha2CodeTest extends TestCase
         $hasJP = false;
 
         foreach ($cases as $case) {
-            if ($case === Alpha2Code::CN) {
+            if (Alpha2Code::CN === $case) {
                 $hasCN = true;
-            } elseif ($case === Alpha2Code::US) {
+            } elseif (Alpha2Code::US === $case) {
                 $hasUS = true;
-            } elseif ($case === Alpha2Code::JP) {
+            } elseif (Alpha2Code::JP === $case) {
                 $hasJP = true;
             }
         }
@@ -101,9 +107,9 @@ class Alpha2CodeTest extends TestCase
             $this->assertArrayHasKey('value', $option);
             $this->assertArrayHasKey('label', $option);
 
-            if ($option['value'] === 'CN') {
+            if ('CN' === $option['value']) {
                 $cnOption = $option;
-            } elseif ($option['value'] === 'US') {
+            } elseif ('US' === $option['value']) {
                 $usOption = $option;
             }
         }
@@ -141,5 +147,41 @@ class Alpha2CodeTest extends TestCase
         $this->assertSame(Alpha2Code::CN, Alpha2Code::tryFrom('CN'));
         $this->assertSame(Alpha2Code::US, Alpha2Code::tryFrom('US'));
         $this->assertNull(Alpha2Code::tryFrom('INVALID'));
+    }
+
+    /**
+     * 测试 toArray 方法
+     */
+    public function testToArray(): void
+    {
+        $array = Alpha2Code::CN->toArray();
+
+        $this->assertNotEmpty($array);
+        $this->assertArrayHasKey('value', $array);
+        $this->assertArrayHasKey('label', $array);
+
+        $this->assertSame('CN', $array['value']);
+        $this->assertSame('中国', $array['label']);
+    }
+
+    /**
+     * 测试 toSelectItem 方法的自定义场景
+     */
+    public function testToSelectItemCustomScenarios(): void
+    {
+        $item = Alpha2Code::CN->toSelectItem();
+
+        $this->assertIsArray($item);
+        $this->assertNotEmpty($item);
+        $this->assertArrayHasKey('value', $item);
+        $this->assertArrayHasKey('label', $item);
+
+        $this->assertSame('CN', $item['value']);
+        $this->assertSame('中国', $item['label']);
+
+        // 测试其他国家
+        $usItem = Alpha2Code::US->toSelectItem();
+        $this->assertSame('US', $usItem['value']);
+        $this->assertSame('美国', $usItem['label']);
     }
 }

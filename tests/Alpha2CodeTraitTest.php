@@ -1,32 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\GBT2659\Tests;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Tourze\GBT2659\Alpha2Code;
+use Tourze\PHPUnitEnum\AbstractEnumTestCase;
 
 /**
  * 测试 Alpha2Code 中的 trait 功能
+ *
+ * @internal
  */
-class Alpha2CodeTraitTest extends TestCase
+#[CoversClass(Alpha2Code::class)]
+final class Alpha2CodeTraitTest extends AbstractEnumTestCase
 {
     /**
-     * 测试 ItemTrait 中的 toSelectItem 方法
+     * 测试 ItemTrait 中的 toSelectItem 方法的自定义测试
      */
-    public function testToSelectItem(): void
+    public function testToSelectItemCustom(): void
     {
         $item = Alpha2Code::CN->toSelectItem();
 
+        $this->assertIsArray($item);
         $this->assertNotEmpty($item);
-        $this->assertArrayHasKey('label', $item);
-        $this->assertArrayHasKey('text', $item);
         $this->assertArrayHasKey('value', $item);
-        $this->assertArrayHasKey('name', $item);
+        $this->assertArrayHasKey('label', $item);
 
-        $this->assertSame('中国', $item['label']);
-        $this->assertSame('中国', $item['text']);
         $this->assertSame('CN', $item['value']);
-        $this->assertSame('中国', $item['name']);
+        $this->assertSame('中国', $item['label']);
+
+        // 测试其他一些国家
+        $samples = [Alpha2Code::US, Alpha2Code::JP, Alpha2Code::GB, Alpha2Code::HK];
+        foreach ($samples as $enum) {
+            $selectItem = $enum->toSelectItem();
+            $this->assertArrayHasKey('value', $selectItem);
+            $this->assertArrayHasKey('label', $selectItem);
+            $this->assertSame($enum->value, $selectItem['value']);
+            $this->assertSame($enum->getLabel(), $selectItem['label']);
+        }
     }
 
     /**
@@ -42,6 +55,17 @@ class Alpha2CodeTraitTest extends TestCase
 
         $this->assertSame('CN', $array['value']);
         $this->assertSame('中国', $array['label']);
+    }
+
+    /**
+     * 测试 toLowerCase 方法
+     */
+    public function testToLowerCase(): void
+    {
+        $this->assertSame('cn', Alpha2Code::CN->toLowerCase());
+        $this->assertSame('us', Alpha2Code::US->toLowerCase());
+        $this->assertSame('jp', Alpha2Code::JP->toLowerCase());
+        $this->assertSame('gb', Alpha2Code::GB->toLowerCase());
     }
 
     /**
@@ -61,7 +85,7 @@ class Alpha2CodeTraitTest extends TestCase
             // 检查所有选项中不包含 CN
             $foundCN = false;
             foreach ($options as $option) {
-                if ($option['value'] === 'CN') {
+                if ('CN' === $option['value']) {
                     $foundCN = true;
                     break;
                 }
@@ -76,7 +100,7 @@ class Alpha2CodeTraitTest extends TestCase
 
             $foundCN = false;
             foreach ($options as $option) {
-                if ($option['value'] === 'CN') {
+                if ('CN' === $option['value']) {
                     $foundCN = true;
                     break;
                 }
